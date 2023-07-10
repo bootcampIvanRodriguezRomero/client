@@ -10,4 +10,6 @@ public class ClientDao {
     private String documentType;
     private String documentNumber;
     private String fullName;
+    private String email;
+    private String type;
 }
