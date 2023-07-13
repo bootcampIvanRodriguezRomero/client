@@ -1,11 +1,12 @@
 package com.bootcamp.client.infraestructure.rest.dto;
+import com.bootcamp.client.infraestructure.repository.dao.ClientTypeDao;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 @Data
-public class Client {
+public class ClientDto {
     @JsonProperty("identification")
     @Id
     private String id;
@@ -19,5 +20,5 @@ public class Client {
     @Email
     private String email;
     @NotBlank(message = "type is required")
-    private String type;
+    private ClientTypeDao type;
 }

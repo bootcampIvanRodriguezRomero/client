@@ -1,92 +1,97 @@
 package com.bootcamp.client.infraestructure.rest;
 
 import com.bootcamp.client.infraestructure.repository.ClientRepository;
+import com.bootcamp.client.infraestructure.repository.ClientTypeRepository;
 import com.bootcamp.client.infraestructure.repository.dao.ClientDao;
-import com.bootcamp.client.infraestructure.rest.dto.Client;
-import com.bootcamp.client.infraestructure.rest.dto.ClientPost;
+import com.bootcamp.client.infraestructure.rest.dto.ClientDto;
+import com.bootcamp.client.infraestructure.rest.dto.ClientPostDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/clients")
 @RequiredArgsConstructor
-
+@Slf4j
 public class ClientResource {
     private final ClientRepository clientRepository;
-    private static final Logger logger = LoggerFactory.getLogger(ClientResource.class);
-
+    private final ClientTypeRepository clientTypeRepository;
     @GetMapping
-    public Flux<Client> getAll() {
+    public Flux<ClientDto> getAll() {
         return clientRepository.findAll()
                 .map(this::fromClientDaoToClientDto);
     }
     @GetMapping("/{id}")
-    public Mono<Client> findClientById(@PathVariable String id) {
+    public Mono<ClientDto> findClientById(@PathVariable String id) {
         return clientRepository.findById(id)
                 .map(this::fromClientDaoToClientDto);
     }
     @PostMapping
-    public Mono<Client> createClient(@Valid @RequestBody ClientPost client) {
-        ClientDao clientDao = fromClientPostToClientDao(client);
-        return clientRepository.save(clientDao)
-                .map(this::fromClientDaoToClientDto);
+    public Mono<ClientDto> createClient(@Valid @RequestBody ClientPostDto clientPostDto) {
+        return clientTypeRepository.findByName(clientPostDto.getType())
+            .flatMap(clientTypeDao -> {
+                    ClientDao clientDao = fromClientPostDtoToClientDao(clientPostDto);
+                    clientDao.setType(clientTypeDao);
+                    return clientRepository.save(clientDao)
+                            .map(this::fromClientDaoToClientDto);
+
+            })
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "The client type does not exist")));
+
     }
     @PutMapping("/{id}")
-    public Mono<Client> modifyClient(@PathVariable String id, @Valid @RequestBody Client client) {
-        return  clientRepository.findById(id)
-                .flatMap(existingClient -> {
-                    existingClient.setDocumentType(client.getDocumentType());
-                    existingClient.setDocumentNumber(client.getDocumentNumber());
-                    existingClient.setFullName(client.getFullName());
-                    existingClient.setEmail(client.getEmail());
-                    existingClient.setType(client.getType());
-                    return clientRepository.save(existingClient);
-                })
-                .map(this::fromClientDaoToClientDto);
+    public Mono<ClientDto> modifyClient(@PathVariable String id, @Valid @RequestBody ClientPostDto clientPostDto) {
+        return clientTypeRepository.findByName(clientPostDto.getType())
+                .flatMap(clientTypeDao ->
+                    clientRepository.findById(id)
+                                    .flatMap(existingClient -> {
+                                        existingClient.setDocumentType(clientPostDto.getDocumentType());
+                                        existingClient.setDocumentNumber(clientPostDto.getDocumentNumber());
+                                        existingClient.setFullName(clientPostDto.getFullName());
+                                        existingClient.setEmail(clientPostDto.getEmail());
+                                        existingClient.setType(clientTypeDao);
+                                        return clientRepository.save(existingClient);
+                                    })
+                                    .map(this::fromClientDaoToClientDto)
+                )
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "The client type does not exist")));
     }
 
     @DeleteMapping("/{id}")
     public void deleteClient(@PathVariable String id) {
-        logger.info("Deleting client with ID: {}", id);
+        log.info("Deleting client with ID: {}", id);
         clientRepository.deleteById(id);
-        logger.info("Client deleted successfully");
+        log.info("Client deleted successfully");
     }
     @DeleteMapping
     public void deleteAllClients() {
-        logger.info("Deleting all clients");
+        log.info("Deleting all clients");
         clientRepository.deleteAll();
-        logger.info("All clients deleted successfully");
+        log.info("All clients deleted successfully");
     }
-    private Client fromClientDaoToClientDto(ClientDao dao) {
-        Client client = new Client();
-        client.setId(dao.getId());
-        client.setDocumentNumber(dao.getDocumentNumber());
-        client.setDocumentType(dao.getDocumentType());
-        client.setFullName(dao.getFullName());
-        client.setEmail(dao.getEmail());
-        client.setType(dao.getType());
-        return client;
+    private ClientDto fromClientDaoToClientDto(ClientDao clientDao) {
+        ClientDto clientDto = new ClientDto();
+        clientDto.setId(clientDao.getId());
+        clientDto.setDocumentNumber(clientDao.getDocumentNumber());
+        clientDto.setDocumentType(clientDao.getDocumentType());
+        clientDto.setFullName(clientDao.getFullName());
+        clientDto.setEmail(clientDao.getEmail());
+        clientDto.setType(clientDao.getType());
+        return clientDto;
     }
-
-    private ClientDao fromClientPostToClientDao(ClientPost clientPost) {
-        ClientDao client = new ClientDao();
-        client.setId(UUID.randomUUID().toString());
-        client.setDocumentType(clientPost.getDocumentType());
-        client.setDocumentNumber(clientPost.getDocumentNumber());
-        client.setFullName(clientPost.getFullName());
-        client.setEmail(clientPost.getEmail());
-        client.setType(clientPost.getType());
-        return client;
+    private ClientDao fromClientPostDtoToClientDao(ClientPostDto clientPostDto) {
+        ClientDao clientDao = new ClientDao();
+        clientDao.setId(UUID.randomUUID().toString());
+        clientDao.setDocumentType(clientPostDto.getDocumentType());
+        clientDao.setDocumentNumber(clientPostDto.getDocumentNumber());
+        clientDao.setFullName(clientPostDto.getFullName());
+        clientDao.setEmail(clientPostDto.getEmail());
+        return clientDao;
     }
 }
