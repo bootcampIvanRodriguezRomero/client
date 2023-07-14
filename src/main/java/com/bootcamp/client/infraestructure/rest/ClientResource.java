@@ -8,6 +8,7 @@ import com.bootcamp.client.infraestructure.rest.dto.ClientPostDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,17 +23,17 @@ import java.util.UUID;
 public class ClientResource {
     private final ClientRepository clientRepository;
     private final ClientTypeRepository clientTypeRepository;
-    @GetMapping
+    @GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ClientDto> getAll() {
         return clientRepository.findAll()
                 .map(this::fromClientDaoToClientDto);
     }
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Mono<ClientDto> findClientById(@PathVariable String id) {
         return clientRepository.findById(id)
                 .map(this::fromClientDaoToClientDto);
     }
-    @PostMapping
+    @PostMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Mono<ClientDto> createClient(@Valid @RequestBody ClientPostDto clientPostDto) {
         return clientTypeRepository.findByName(clientPostDto.getType())
             .flatMap(clientTypeDao -> {
@@ -45,7 +46,7 @@ public class ClientResource {
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "The client type does not exist")));
 
     }
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Mono<ClientDto> modifyClient(@PathVariable String id, @Valid @RequestBody ClientPostDto clientPostDto) {
         return clientTypeRepository.findByName(clientPostDto.getType())
                 .flatMap(clientTypeDao ->

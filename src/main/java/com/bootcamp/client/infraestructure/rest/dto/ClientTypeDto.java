@@ -10,6 +10,5 @@ public class ClientTypeDto {
     @JsonProperty("identification")
     @Id
     private String id;
-    @NotBlank(message = "Name is required")
     private String name;
 }
