@@ -3,7 +3,8 @@ package com.bootcamp.client.client.application.services;
 import com.bootcamp.client.client.application.dto.ClientDto;
 import com.bootcamp.client.client.domain.model.Client;
 import com.bootcamp.client.client.domain.repositories.ClientRepository;
-import com.bootcamp.client.client.infrastructure.converter.ClientConverter;
+import com.bootcamp.client.client.application.dto.ClientDtoConverter;
+import com.bootcamp.client.client.application.dto.ClientPostDtoConverter;
 import com.bootcamp.client.client.application.dto.ClientPostDto;
 import com.bootcamp.client.clientType.domain.repositories.ClientTypeRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,23 +23,23 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Flux<ClientDto> getAllClients() {
         return clientRepository.findAll()
-                .map(ClientConverter.INSTANCE::clientToClientDto);
+                .map(ClientDtoConverter.INSTANCE::clientToClientDto);
     }
 
     @Override
     public Mono<ClientDto> getClientById(String id) {
         return clientRepository.findById(id)
-                .map(ClientConverter.INSTANCE::clientToClientDto);
+                .map(ClientDtoConverter.INSTANCE::clientToClientDto);
     }
 
     @Override
     public Mono<ClientDto> createClient(ClientPostDto clientPostDto) {
         return clientTypeRepository.findByName(clientPostDto.getType())
                 .flatMap(clientType -> {
-                    Client client = ClientConverter.INSTANCE.clientPostDtoToClient(clientPostDto);
+                    Client client = ClientPostDtoConverter.INSTANCE.clientPostDtoToClient(clientPostDto);
                     client.setType(clientType);
                     return clientRepository.save(client)
-                            .map(ClientConverter.INSTANCE::clientToClientDto);
+                            .map(ClientDtoConverter.INSTANCE::clientToClientDto);
                 })
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "The client type does not exist")));
     }
@@ -49,12 +50,12 @@ public class ClientServiceImpl implements ClientService {
                 .flatMap(clientType ->
                         clientRepository.findById(id)
                                 .flatMap(client -> {
-                                    Client modifiedClient = ClientConverter.INSTANCE.clientPostDtoToClient(clientPostDto);
+                                    Client modifiedClient = ClientPostDtoConverter.INSTANCE.clientPostDtoToClient(clientPostDto);
                                     modifiedClient.setId(client.getId());
                                     modifiedClient.setType(clientType);
                                     return clientRepository.save(modifiedClient);
                                 })
-                                .map(ClientConverter.INSTANCE::clientToClientDto))
+                                .map(ClientDtoConverter.INSTANCE::clientToClientDto))
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "The client type does not exist")));
     }
 

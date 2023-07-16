@@ -2,7 +2,7 @@ package com.bootcamp.client.client.infrastructure.persistence;
 
 import com.bootcamp.client.client.domain.model.Client;
 import com.bootcamp.client.client.domain.repositories.ClientRepository;
-import com.bootcamp.client.client.infrastructure.converter.ClientConverter;
+import com.bootcamp.client.client.infrastructure.dao.ClientDaoConverter;
 import com.bootcamp.client.client.infrastructure.dao.ClientDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,20 +18,20 @@ public class ClientRepositoryImpl implements ClientRepository {
     @Override
     public Flux<Client> findAll() {
         return clientMongoRepository.findAll()
-                .map(ClientConverter.INSTANCE::clientDaoToClient);
+                .map(ClientDaoConverter.INSTANCE::clientDaoToClient);
     }
 
     @Override
     public Mono<Client> findById(String id) {
         return clientMongoRepository.findById(id)
-                .map(ClientConverter.INSTANCE::clientDaoToClient);
+                .map(ClientDaoConverter.INSTANCE::clientDaoToClient);
     }
 
     @Override
     public Mono<Client> save(Client client) {
-        ClientDao clientDao = ClientConverter.INSTANCE.clientToClientDao(client);
+        ClientDao clientDao = ClientDaoConverter.INSTANCE.clientToClientDao(client);
         return clientMongoRepository.save(clientDao)
-                .map(ClientConverter.INSTANCE::clientDaoToClient);
+                .map(ClientDaoConverter.INSTANCE::clientDaoToClient);
     }
 
     @Override

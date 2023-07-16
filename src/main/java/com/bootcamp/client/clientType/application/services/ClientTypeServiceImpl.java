@@ -1,8 +1,9 @@
 package com.bootcamp.client.clientType.application.services;
 
+import com.bootcamp.client.clientType.application.dto.ClientTypeDtoConverter;
 import com.bootcamp.client.clientType.application.dto.ClientTypePostDto;
+import com.bootcamp.client.clientType.application.dto.ClientTypePostDtoConverter;
 import com.bootcamp.client.clientType.domain.model.ClientType;
-import com.bootcamp.client.clientType.infrastructure.converter.ClientTypeConverter;
 import com.bootcamp.client.clientType.application.dto.ClientTypeDto;
 import com.bootcamp.client.clientType.domain.repositories.ClientTypeRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,13 @@ public class ClientTypeServiceImpl implements ClientTypeService {
     @Override
     public Flux<ClientTypeDto> getAllClientTypes() {
         return clientTypeRepository.findAll()
-                .map(ClientTypeConverter.INSTANCE::clientTypeToClientTypeDto);
+                .map(ClientTypeDtoConverter.INSTANCE::clientTypeToClientTypeDto);
     }
 
     @Override
     public Mono<ClientTypeDto> getClientTypeById(String id) {
         return clientTypeRepository.findById(id)
-                .map(ClientTypeConverter.INSTANCE::clientTypeToClientTypeDto);
+                .map(ClientTypeDtoConverter.INSTANCE::clientTypeToClientTypeDto);
     }
 
     @Override
@@ -37,9 +38,9 @@ public class ClientTypeServiceImpl implements ClientTypeService {
                     if(nameExists) {
                         return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "The name already exists"));
                     } else {
-                        ClientType clientType = ClientTypeConverter.INSTANCE.clientTypePostDtoToClientType(clientTypePostDto);
+                        ClientType clientType = ClientTypePostDtoConverter.INSTANCE.clientTypePostDtoToClientType(clientTypePostDto);
                         return clientTypeRepository.save(clientType)
-                                .map(ClientTypeConverter.INSTANCE::clientTypeToClientTypeDto);
+                                .map(ClientTypeDtoConverter.INSTANCE::clientTypeToClientTypeDto);
                     }
                 });
     }
@@ -53,11 +54,11 @@ public class ClientTypeServiceImpl implements ClientTypeService {
                     } else {
                         return clientTypeRepository.findById(id)
                                 .flatMap(clientType -> {
-                                    ClientType modifiedClientType = ClientTypeConverter.INSTANCE.clientTypePostDtoToClientType(clientTypePostDto);
+                                    ClientType modifiedClientType = ClientTypePostDtoConverter.INSTANCE.clientTypePostDtoToClientType(clientTypePostDto);
                                     modifiedClientType.setId(clientType.getId());
                                     return clientTypeRepository.save(modifiedClientType);
                                 })
-                                .map(ClientTypeConverter.INSTANCE::clientTypeToClientTypeDto);
+                                .map(ClientTypeDtoConverter.INSTANCE::clientTypeToClientTypeDto);
                     }
                 });
     }
