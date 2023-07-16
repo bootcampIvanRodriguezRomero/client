@@ -1,7 +1,9 @@
-package com.bootcamp.client.infraestructure.rest.dto;
-import lombok.Data;
-import jakarta.validation.constraints.NotBlank;
+package com.bootcamp.client.client.application.dto;
+
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+
 @Data
 public class ClientPostDto {
     @NotBlank(message = "document type is required")

@@ -1,4 +1,4 @@
-package com.bootcamp.client.infraestructure.rest.dto;
+package com.bootcamp.client.clientType.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

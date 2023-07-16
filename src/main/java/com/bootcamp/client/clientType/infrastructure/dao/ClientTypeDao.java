@@ -1,4 +1,4 @@
-package com.bootcamp.client.infraestructure.repository.dao;
+package com.bootcamp.client.clientType.infrastructure.dao;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

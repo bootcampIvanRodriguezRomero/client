@@ -1,7 +1,6 @@
-package com.bootcamp.client.infraestructure.rest.dto;
+package com.bootcamp.client.clientType.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 

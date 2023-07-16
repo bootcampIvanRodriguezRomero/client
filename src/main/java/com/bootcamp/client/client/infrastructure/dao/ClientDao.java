@@ -1,4 +1,6 @@
-package com.bootcamp.client.infraestructure.repository.dao;
+package com.bootcamp.client.client.infrastructure.dao;
+
+import com.bootcamp.client.clientType.domain.model.ClientType;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,5 +13,5 @@ public class ClientDao {
     private String documentNumber;
     private String fullName;
     private String email;
-    private ClientTypeDao type;
+    private ClientType type;
 }
