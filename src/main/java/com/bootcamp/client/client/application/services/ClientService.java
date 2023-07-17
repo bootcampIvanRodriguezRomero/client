@@ -5,11 +5,19 @@ import com.bootcamp.client.client.application.dto.ClientPostDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Service interface for managing clients.
+ */
 public interface ClientService {
-    Flux<ClientDto> getAllClients();
-    Mono<ClientDto> getClientById(String id);
-    Mono<ClientDto> createClient(ClientPostDto clientPostDto);
-    Mono<ClientDto> modifyClient(String id, ClientPostDto clientPostDto);
-    Mono<Void> deleteClient(String id);
-    Mono<Void> deleteAllClients();
+  Flux<ClientDto> getAllClients();
+  
+  Mono<ClientDto> getClientById(String id);
+  
+  Mono<ClientDto> createClient(ClientPostDto clientPostDto);
+  
+  Mono<ClientDto> modifyClient(String id, ClientPostDto clientPostDto);
+  
+  Mono<Void> deleteClient(String id);
+  
+  Mono<Void> deleteAllClients();
 }

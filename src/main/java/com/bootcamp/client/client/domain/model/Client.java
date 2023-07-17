@@ -1,14 +1,17 @@
 package com.bootcamp.client.client.domain.model;
 
-import com.bootcamp.client.clientType.domain.model.ClientType;
+import com.bootcamp.client.clienttype.domain.model.ClientType;
 import lombok.Data;
 
+/**
+ * Represents a client.
+ */
 @Data
 public class Client {
-    private String id;
-    private String documentType;
-    private String documentNumber;
-    private String fullName;
-    private String email;
-    private ClientType type;
+  private String id;
+  private String documentType;
+  private String documentNumber;
+  private String fullName;
+  private String email;
+  private ClientType type;
 }
