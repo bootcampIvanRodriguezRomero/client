@@ -53,23 +53,16 @@ public class ClientTypeServiceImpl implements ClientTypeService {
   
   @Override
   public Mono<ClientTypeDto> modifyClientType(String id, ClientTypePostDto clientTypePostDto) {
-    return clientTypeRepository.existsByName(clientTypePostDto.getName())
-      .flatMap(nameExists -> {
-        if (nameExists) {
-          return Mono.error(
-            new ResponseStatusException(HttpStatus.BAD_REQUEST, "The name already exists"));
-        } else {
-          return clientTypeRepository.findById(id)
-            .flatMap(clientType -> {
+    return clientTypeRepository.findById(id)
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Client type not found")))
+            .flatMap(existingclientType -> {
               ClientType modifiedClientType =
                   ClientTypePostDtoConverter.INSTANCE.clientTypePostDtoToClientType(
                   clientTypePostDto);
-              modifiedClientType.setId(clientType.getId());
+              modifiedClientType.setId(existingclientType.getId());
               return clientTypeRepository.save(modifiedClientType);
             })
             .map(ClientTypeDtoConverter.INSTANCE::clientTypeToClientTypeDto);
-        }
-      });
   }
   
   @Override
