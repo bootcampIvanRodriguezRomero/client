@@ -25,7 +25,7 @@ import reactor.core.publisher.Mono;
  * in the ClientTypeService.
  */
 @RestController
-@RequestMapping("/clientTypes")
+@RequestMapping("/client_types")
 @RequiredArgsConstructor
 public class ClientTypeResource {
   
