@@ -13,11 +13,8 @@ public interface ClientDtoConverter {
   ClientDtoConverter INSTANCE = Mappers.getMapper(ClientDtoConverter.class);
   
   @Mapping(target = "id", source = "client.id")
-  @Mapping(target = "documentType", source = "client.documentType")
-  @Mapping(target = "documentNumber", source = "client.documentNumber")
-  @Mapping(target = "fullName", source = "client.fullName")
-  @Mapping(target = "email", source = "client.email")
   @Mapping(target = "type", source = "client.type")
+  @Mapping(target = "data", source = "client.data")
   ClientDto clientToClientDto(Client client);
   
 }

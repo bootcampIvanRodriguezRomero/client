@@ -13,10 +13,7 @@ public interface ClientPostDtoConverter {
   ClientPostDtoConverter INSTANCE = Mappers.getMapper(ClientPostDtoConverter.class);
   
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "documentType", source = "clientPostDto.documentType")
-  @Mapping(target = "documentNumber", source = "clientPostDto.documentNumber")
-  @Mapping(target = "fullName", source = "clientPostDto.fullName")
-  @Mapping(target = "email", source = "clientPostDto.email")
   @Mapping(target = "type", ignore = true)
+  @Mapping(target = "data", source = "clientPostDto.data")
   Client clientPostDtoToClient(ClientPostDto clientPostDto);
 }

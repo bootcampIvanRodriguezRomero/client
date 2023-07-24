@@ -9,9 +9,6 @@ import lombok.Data;
 @Data
 public class Client {
   private String id;
-  private String documentType;
-  private String documentNumber;
-  private String fullName;
-  private String email;
   private ClientType type;
+  private ClientData data;
 }

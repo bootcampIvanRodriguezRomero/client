@@ -1,6 +1,7 @@
 package com.bootcamp.client.client.domain.repositories;
 
 import com.bootcamp.client.client.domain.model.Client;
+import com.bootcamp.client.client.domain.model.ClientData;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

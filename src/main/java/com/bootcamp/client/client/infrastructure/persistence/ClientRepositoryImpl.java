@@ -1,6 +1,7 @@
 package com.bootcamp.client.client.infrastructure.persistence;
 
 import com.bootcamp.client.client.domain.model.Client;
+import com.bootcamp.client.client.domain.model.ClientData;
 import com.bootcamp.client.client.domain.repositories.ClientRepository;
 import com.bootcamp.client.client.infrastructure.dao.ClientDao;
 import com.bootcamp.client.client.infrastructure.dao.ClientDaoConverter;

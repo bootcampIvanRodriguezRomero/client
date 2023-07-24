@@ -14,18 +14,12 @@ public interface ClientDaoConverter {
   ClientDaoConverter INSTANCE = Mappers.getMapper(ClientDaoConverter.class);
   
   @Mapping(target = "id", source = "clientDao.id")
-  @Mapping(target = "documentType", source = "clientDao.documentType")
-  @Mapping(target = "documentNumber", source = "clientDao.documentNumber")
-  @Mapping(target = "fullName", source = "clientDao.fullName")
-  @Mapping(target = "email", source = "clientDao.email")
   @Mapping(target = "type", source = "clientDao.type")
+  @Mapping(target = "data", source = "clientDao.data")
   Client clientDaoToClient(ClientDao clientDao);
   
   @Mapping(target = "id", source = "client.id")
-  @Mapping(target = "documentType", source = "client.documentType")
-  @Mapping(target = "documentNumber", source = "client.documentNumber")
-  @Mapping(target = "fullName", source = "client.fullName")
-  @Mapping(target = "email", source = "client.email")
   @Mapping(target = "type", source = "client.type")
+  @Mapping(target = "data", source = "client.data")
   ClientDao clientToClientDao(Client client);
 }
